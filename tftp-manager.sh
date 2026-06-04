@@ -80,18 +80,34 @@ stop_tftp() {
     fi
 }
 
+INSTALLED_WORKFLOW="$HOME/Library/Services/Copy to TFTP Server.workflow"
+
+is_quick_action_installed() {
+    [ -d "$INSTALLED_WORKFLOW" ]
+}
+
 install_quick_action() {
     if [ ! -d "$WORKFLOW_SRC" ]; then
-        printf "${RED}✗ Workflow not found at:\n  %s${NC}\n" "$WORKFLOW_SRC"
+        printf "${RED}✗ Workflow source not found at:\n  %s${NC}\n" "$WORKFLOW_SRC"
         printf "  Run ./install.sh first, or run this script from the project directory.\n"
         return 1
     fi
     SERVICES_DIR="$HOME/Library/Services"
     mkdir -p "$SERVICES_DIR"
+    # Remove existing copy first so cp -R doesn't nest inside it
+    rm -rf "$INSTALLED_WORKFLOW"
     cp -R "$WORKFLOW_SRC" "$SERVICES_DIR/"
+    # Remove quarantine so Gatekeeper doesn't silently block the workflow
+    xattr -rd com.apple.quarantine "$INSTALLED_WORKFLOW" 2>/dev/null || true
     killall Finder 2>/dev/null || true
-    printf "${GREEN}✓ Quick Action installed to ~/Library/Services/${NC}\n"
+    printf "${GREEN}✓ Quick Action installed.${NC}\n"
     printf "  Right-click any file or folder in Finder → Copy to TFTP Server\n"
+}
+
+uninstall_quick_action() {
+    rm -rf "$INSTALLED_WORKFLOW"
+    killall Finder 2>/dev/null || true
+    printf "${GREEN}✓ Quick Action removed.${NC}\n"
 }
 
 # ── Menu ──────────────────────────────────────────────────────────────────────
@@ -99,7 +115,11 @@ show_menu() {
     printf "\n"
     printf "  ${BOLD}1)${NC} Start TFTP Server\n"
     printf "  ${BOLD}2)${NC} Stop TFTP Server\n"
-    printf "  ${BOLD}3)${NC} Install Quick Action\n"
+    if is_quick_action_installed; then
+        printf "  ${BOLD}3)${NC} Uninstall Quick Action\n"
+    else
+        printf "  ${BOLD}3)${NC} Install Quick Action\n"
+    fi
     printf "  ${BOLD}4)${NC} Exit\n"
     printf "\n"
     printf "  Enter choice [1-4]: "
@@ -114,7 +134,7 @@ main() {
         case "$choice" in
             1) start_tftp   ;;
             2) stop_tftp    ;;
-            3) install_quick_action ;;
+            3) if is_quick_action_installed; then uninstall_quick_action; else install_quick_action; fi ;;
             4) printf "Goodbye.\n"; exit 0 ;;
             *) printf "${YELLOW}Invalid option — enter 1, 2, 3, or 4.${NC}\n" ;;
         esac
