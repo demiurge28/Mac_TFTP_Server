@@ -1,0 +1,6 @@
+version: '3'
+
+includes:
+  deft:
+    taskfile: ./.deft/core/Taskfile.yml
+    optional: true
