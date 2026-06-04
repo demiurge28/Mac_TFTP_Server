@@ -7,6 +7,25 @@ A Bash CLI and Finder Quick Action for managing macOS's built-in TFTP server (`c
 - A new Terminal window opens for every copy so you can watch the transfer live
 - `/private/tftpboot` is created on start and deleted on stop — no leftover state
 
+## Quick Start
+
+```bash
+# 1. Install
+git clone https://github.com/demiurge28/Mac_TFTP_Server.git
+cd Mac_TFTP_Server && ./install.sh
+
+# 2. Start the TFTP server
+tftp-manager          # choose option 1
+
+# 3. Copy files via terminal (optional)
+tftp-copy /path/to/file.bin
+
+# 4. Stop the server and clear /private/tftpboot
+tftp-manager          # choose option 2
+```
+
+Or skip the terminal entirely — **right-click any file or folder in Finder** and choose **Copy to TFTP Server**. A Terminal window opens, starts the server if needed, and copies the selection.
+
 ## Requirements
 
 - macOS Sequoia or later (tested on 26.x)
