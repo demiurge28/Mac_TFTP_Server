@@ -24,7 +24,7 @@ xcode-select --install
 ### 1. Clone the repository
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/demiurge28/Mac_TFTP_Server.git
 cd Mac_TFTP_Server
 ```
 
