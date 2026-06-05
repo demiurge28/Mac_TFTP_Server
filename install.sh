@@ -33,6 +33,9 @@ sudo cp -R "$SCRIPT_DIR/quick-action" "$INSTALL_SHARE/"
 printf "→ Installing Quick Action to %s ...\n" "$SERVICES_DIR"
 mkdir -p "$SERVICES_DIR"
 cp -R "$SCRIPT_DIR/quick-action/Copy to TFTP Server.workflow" "$SERVICES_DIR/"
+xattr -rd com.apple.quarantine "$SERVICES_DIR/Copy to TFTP Server.workflow" 2>/dev/null || true
+LSREG="/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister"
+"$LSREG" -f "$SERVICES_DIR/Copy to TFTP Server.workflow" 2>/dev/null || true
 killall Finder 2>/dev/null || true
 
 # ── Done ──────────────────────────────────────────────────────────────────────

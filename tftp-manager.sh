@@ -99,6 +99,9 @@ install_quick_action() {
     cp -R "$WORKFLOW_SRC" "$SERVICES_DIR/"
     # Remove quarantine so Gatekeeper doesn't silently block the workflow
     xattr -rd com.apple.quarantine "$INSTALLED_WORKFLOW" 2>/dev/null || true
+    # Register with Launch Services so macOS discovers it as a Finder service
+    LSREG="/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister"
+    "$LSREG" -f "$INSTALLED_WORKFLOW" 2>/dev/null || true
     killall Finder 2>/dev/null || true
     printf "${GREEN}✓ Quick Action installed.${NC}\n"
     printf "  Right-click any file or folder in Finder → Copy to TFTP Server\n"
