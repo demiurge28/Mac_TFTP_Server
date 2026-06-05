@@ -7,11 +7,32 @@
 	<key>CFBundleName</key>
 	<string>Copy to TFTP Server</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-	<key>NSPrincipalClass</key>
-	<string>NSApplication</string>
+	<key>NSExtension</key>
+	<dict>
+		<key>NSExtensionAttributes</key>
+		<dict>
+			<key>NSExtensionActivationRule</key>
+			<dict>
+				<key>NSExtensionActivationSupportsFileWithMinCount</key>
+				<integer>1</integer>
+				<key>NSExtensionActivationSupportsFileWithMaxCount</key>
+				<integer>100</integer>
+			</dict>
+			<key>NSExtensionServiceAllowsFinderPreviewItem</key>
+			<true/>
+			<key>NSExtensionServiceFinderPreviewLabel</key>
+			<string>Copy to TFTP Server</string>
+			<key>NSExtensionServiceToolbarPaletteLabel</key>
+			<string>Copy to TFTP Server</string>
+		</dict>
+		<key>NSExtensionPointIdentifier</key>
+		<string>com.apple.services</string>
+		<key>NSExtensionPrincipalClass</key>
+		<string>AMWorkflowController</string>
+	</dict>
 	<key>NSServices</key>
 	<array>
 		<dict>

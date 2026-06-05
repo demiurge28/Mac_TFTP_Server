@@ -134,20 +134,28 @@ Exits the program. The TFTP server continues running if started.
 
 #### Where it appears
 
-The Quick Action is registered as a macOS **Service** and appears in two places:
+Right after `./install.sh` the action is available in:
 
 - **Finder menu bar** → Finder → Services → **Copy to TFTP Server**
 - **Right-click context menu** → Services → **Copy to TFTP Server**
 
-> The item only appears when at least one file or folder is selected in Finder. It is not visible with an empty selection.
+To promote it out of the Services submenu and into the **Quick Actions** section directly in the right-click menu (and the Finder preview pane), enable it once in System Settings:
+
+**System Settings → Privacy & Security → Extensions → Finder**
+
+Enable the toggle next to **Copy to TFTP Server**. After that it appears directly in the right-click menu and in the Finder preview pane toolbar.
+
+The installer opens this page for you automatically. `tftp-manager` option 3 also opens it when installing.
+
+> The item only appears when at least one file or folder is selected. It is not visible with an empty selection.
 
 #### How to use it
 
 1. In Finder, select one or more files or folders
-2. Right-click the selection (or use the Finder menu → Services)
-3. Choose **Copy to TFTP Server**
-4. A Terminal window opens automatically and runs `tftp-copy`
-5. When the Terminal shows **Press Enter to close...**, press Enter to dismiss it
+2. Right-click → **Copy to TFTP Server** (Quick Actions section, once enabled)
+   - Or: Finder menu → Services → **Copy to TFTP Server** (always available without enabling)
+3. A Terminal window opens automatically and runs `tftp-copy`
+4. When the Terminal shows **Press Enter to close...**, press Enter to dismiss it
 
 You can select multiple files and folders at once — all items are copied in a single operation.
 
@@ -208,11 +216,11 @@ rm -rf "$HOME/Library/Services/Copy to TFTP Server.workflow"
 
 ## Troubleshooting
 
-**Quick Action does not appear in Finder**
-The service only shows when a file or folder is selected. If it still doesn't appear, run `tftp-manager` and choose option 3 (Install Quick Action), or log out and back in.
+**Quick Action does not appear in the right-click menu directly**
+Enable it in System Settings → Privacy & Security → Extensions → Finder. It always appears under Finder → Services as a fallback.
 
 **Quick Action is greyed out or does nothing**
-Open System Settings → Keyboard → Keyboard Shortcuts → Services and confirm **Copy to TFTP Server** is enabled under Files and Folders.
+Confirm **Copy to TFTP Server** is toggled on in System Settings → Privacy & Security → Extensions → Finder. The toggle must be enabled for the Quick Action section to show it.
 
 **TFTP server shows `state = not running` but should be running**
 This is normal. `com.apple.tftpd` is an inetd-style daemon — `launchd` holds the UDP 69 socket and only spawns `tftpd` on an incoming request. Confirm it is listening with:
