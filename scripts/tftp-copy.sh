@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# tftp-copy — called by the Finder Quick Action inside a new Terminal window
+# tftp-copy — called by the Finder Service inside a new Terminal window
 # Usage: tftp-copy <file_or_folder> [<file_or_folder> ...]
 
 PLIST="/System/Library/LaunchDaemons/tftp.plist"

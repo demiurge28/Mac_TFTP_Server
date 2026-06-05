@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # tftp-manager — macOS TFTP Server Manager
-# Manages com.apple.tftpd and the Finder Quick Action
+# Manages com.apple.tftpd and the Finder Service
 
 PLIST="/System/Library/LaunchDaemons/tftp.plist"
 TFTPBOOT="/private/tftpboot"
@@ -103,14 +103,14 @@ install_quick_action() {
     LSREG="/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister"
     "$LSREG" -f "$INSTALLED_WORKFLOW" 2>/dev/null || true
     killall Finder 2>/dev/null || true
-    printf "${GREEN}✓ Quick Action installed.${NC}\n"
-    printf "  Right-click any file or folder in Finder → Copy to TFTP Server\n"
+    printf "${GREEN}✓ Service installed.${NC}\n"
+    printf "  In Finder, right-click a file or folder → Services → Copy to TFTP Server\n"
 }
 
 uninstall_quick_action() {
     rm -rf "$INSTALLED_WORKFLOW"
     killall Finder 2>/dev/null || true
-    printf "${GREEN}✓ Quick Action removed.${NC}\n"
+    printf "${GREEN}✓ Service removed.${NC}\n"
 }
 
 # ── Menu ──────────────────────────────────────────────────────────────────────
@@ -119,9 +119,9 @@ show_menu() {
     printf "  ${BOLD}1)${NC} Start TFTP Server\n"
     printf "  ${BOLD}2)${NC} Stop TFTP Server\n"
     if is_quick_action_installed; then
-        printf "  ${BOLD}3)${NC} Uninstall Quick Action\n"
+        printf "  ${BOLD}3)${NC} Uninstall Service\n"
     else
-        printf "  ${BOLD}3)${NC} Install Quick Action\n"
+        printf "  ${BOLD}3)${NC} Install Service\n"
     fi
     printf "  ${BOLD}4)${NC} Exit\n"
     printf "\n"

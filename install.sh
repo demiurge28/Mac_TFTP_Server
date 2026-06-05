@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # install.sh — macOS TFTP Manager installer
-# Installs tftp-manager, tftp-copy, and the Finder Quick Action
+# Installs tftp-manager, tftp-copy, and the Finder Service
 
 set -euo pipefail
 
@@ -29,8 +29,8 @@ printf "→ Installing shared data to %s ...\n" "$INSTALL_SHARE"
 sudo mkdir -p "$INSTALL_SHARE"
 sudo cp -R "$SCRIPT_DIR/quick-action" "$INSTALL_SHARE/"
 
-# ── Quick Action ──────────────────────────────────────────────────────────────
-printf "→ Installing Quick Action to %s ...\n" "$SERVICES_DIR"
+# ── Finder Service ────────────────────────────────────────────────────────────
+printf "→ Installing Finder Service to %s ...\n" "$SERVICES_DIR"
 mkdir -p "$SERVICES_DIR"
 cp -R "$SCRIPT_DIR/quick-action/Copy to TFTP Server.workflow" "$SERVICES_DIR/"
 xattr -rd com.apple.quarantine "$SERVICES_DIR/Copy to TFTP Server.workflow" 2>/dev/null || true
@@ -41,4 +41,4 @@ killall Finder 2>/dev/null || true
 # ── Done ──────────────────────────────────────────────────────────────────────
 printf "\n${GREEN}✓ Installation complete!${NC}\n\n"
 printf "  • Run ${BOLD}tftp-manager${NC} from any terminal\n"
-printf "  • In Finder, right-click any file or folder → ${BOLD}Copy to TFTP Server${NC}\n\n"
+printf "  • In Finder, right-click a file or folder → ${BOLD}Services${NC} → ${BOLD}Copy to TFTP Server${NC}\n\n"

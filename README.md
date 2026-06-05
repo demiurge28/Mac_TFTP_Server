@@ -1,6 +1,6 @@
 # macOS TFTP Server Manager
 
-A Bash CLI and Finder Quick Action for managing macOS's built-in TFTP server (`com.apple.tftpd`).
+A Bash CLI and Finder Service for managing macOS's built-in TFTP server (`com.apple.tftpd`).
 
 - **Start/stop** the TFTP daemon from a simple terminal menu
 - **Right-click** any file or folder in Finder to copy it straight to the TFTP root
@@ -59,11 +59,11 @@ You will be prompted for your administrator password. The installer places the f
 | File | Location | Purpose |
 |------|-----------|---------|
 | `tftp-manager` | `/usr/local/bin/tftp-manager` | Interactive CLI menu |
-| `tftp-copy` | `/usr/local/bin/tftp-copy` | Quick Action helper script |
-| Workflow data | `/usr/local/share/tftp-manager/` | Source for Quick Action reinstall |
-| Quick Action | `~/Library/Services/` | Finder right-click service |
+| `tftp-copy` | `/usr/local/bin/tftp-copy` | Finder Service helper script |
+| Workflow data | `/usr/local/share/tftp-manager/` | Source for Service reinstall |
+| Service workflow | `~/Library/Services/` | Finder right-click service |
 
-Finder restarts automatically. The Quick Action is available immediately in the right-click menu.
+Finder restarts automatically. The Service is available immediately.
 
 ### 3. Verify
 
@@ -95,7 +95,7 @@ The menu shows the current server status at the top and loops after each action 
 
   1) Start TFTP Server
   2) Stop TFTP Server
-  3) Install Quick Action
+  3) Install Service
   4) Exit
 
   Enter choice [1-4]:
@@ -117,12 +117,12 @@ You will be prompted for your password if sudo credentials have expired.
 
 > **Warning:** stopping the server removes everything in `/private/tftpboot`. Copy any files you want to keep before stopping.
 
-#### Option 3 — Install / Uninstall Quick Action
+#### Option 3 — Install / Uninstall Service
 
 This option toggles based on the current state:
 
-- **Install Quick Action** — copies the workflow to `~/Library/Services/`, strips the quarantine attribute, registers it with macOS, and restarts Finder. Use this after a fresh clone or if the service disappears.
-- **Uninstall Quick Action** — removes the workflow from `~/Library/Services/` and restarts Finder.
+- **Install Service** — copies the workflow to `~/Library/Services/`, strips the quarantine attribute, registers it with macOS, and restarts Finder. Use this after a fresh clone or if the service disappears.
+- **Uninstall Service** — removes the workflow from `~/Library/Services/` and restarts Finder.
 
 #### Option 4 — Exit
 
@@ -130,24 +130,26 @@ Exits the program. The TFTP server continues running if started.
 
 ---
 
-### Finder Quick Action — Copy to TFTP Server
+### Finder Service — Copy to TFTP Server
 
-#### Where it appears
+This is a **macOS Service** — a standard macOS mechanism that adds items to Finder's right-click menu. It is not a Quick Action (those require a paid Apple Developer account and code signing).
 
-After installation, **Copy to TFTP Server** is available in:
+#### Where to find it
 
-- **Right-click context menu** → Quick Actions → **Copy to TFTP Server**
-- **Right-click context menu** → Services → **Copy to TFTP Server**
-- **Finder menu bar** → Finder → Services → **Copy to TFTP Server**
+After installation, right-click any file or folder in Finder and look for **Copy to TFTP Server** in the **Services** submenu:
 
-> The item only appears when at least one file or folder is selected. It is not visible with an empty selection.
+- **Right-click** a file or folder → **Services** → **Copy to TFTP Server**
+- **Finder menu bar** → **Finder** → **Services** → **Copy to TFTP Server**
+
+> **The Services submenu only appears when at least one file or folder is selected.** With nothing selected, Services will be absent or greyed out in both the right-click menu and the Finder menu bar.
 
 #### How to use it
 
 1. In Finder, select one or more files or folders
-2. Right-click → **Copy to TFTP Server**
-3. A Terminal window opens automatically and runs `tftp-copy`
-4. When the Terminal shows **Press Enter to close...**, press Enter to dismiss it
+2. Right-click the selection
+3. Choose **Services** → **Copy to TFTP Server**
+4. A Terminal window opens automatically
+5. When the Terminal shows **Press Enter to close...**, press Enter to dismiss it
 
 You can select multiple files and folders at once — all items are copied in a single operation.
 
@@ -190,12 +192,12 @@ Mac_TFTP_Server/
 ├── tftp-manager.sh          # Main CLI script
 ├── install.sh               # Installer
 ├── scripts/
-│   └── tftp-copy.sh         # Quick Action helper (runs in Terminal)
+│   └── tftp-copy.sh         # Service helper (runs in Terminal window)
 └── quick-action/
     └── Copy to TFTP Server.workflow/
         └── Contents/
             ├── document.wflow   # Automator workflow definition
-            └── Info.plist       # Bundle metadata (required for macOS service registration)
+            └── Info.plist       # Bundle metadata (required for macOS Services registration)
 ```
 
 ## Uninstall
@@ -208,8 +210,8 @@ rm -rf "$HOME/Library/Services/Copy to TFTP Server.workflow"
 
 ## Troubleshooting
 
-**Quick Action does not appear in the right-click menu**
-Run `tftp-manager`, choose option 3 (Install Quick Action), or log out and back in. The action only appears when at least one file or folder is selected in Finder.
+**Copy to TFTP Server does not appear in the right-click menu**
+Right-click a file or folder (not an empty area) — the **Services** submenu only appears when something is selected. If it still doesn't appear, run `tftp-manager` and choose option 3 (Install Service), or log out and back in.
 
 **TFTP server shows `state = not running` but should be running**
 This is normal. `com.apple.tftpd` is an inetd-style daemon — `launchd` holds the UDP 69 socket and only spawns `tftpd` on an incoming request. Confirm it is listening with:
