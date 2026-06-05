@@ -13,6 +13,7 @@ A Bash CLI and Finder Quick Action for managing macOS's built-in TFTP server (`c
 # 1. Install
 git clone https://github.com/demiurge28/Mac_TFTP_Server.git
 cd Mac_TFTP_Server && ./install.sh
+# System Settings opens automatically — enable "Copy to TFTP Server" under Finder
 
 # 2. Start the TFTP server
 tftp-manager          # choose option 1
@@ -65,7 +66,18 @@ You will be prompted for your administrator password. The installer places the f
 
 Finder restarts automatically so the Quick Action is available immediately.
 
-### 3. Verify
+### 3. Enable the Quick Action in System Settings
+
+The installer opens System Settings automatically at the end of installation. When it opens:
+
+1. Navigate to **Privacy & Security → Extensions → Finder** (if not already there)
+2. Enable the toggle next to **Copy to TFTP Server**
+
+This is a one-time step required by macOS for any unsigned software that extends Finder's right-click menu. Once enabled, **Copy to TFTP Server** appears directly in the right-click Quick Actions section and in the Finder preview pane.
+
+> **Already works without this step** — the action is also available immediately under Finder → Services → Copy to TFTP Server (no toggle required).
+
+### 4. Verify
 
 Confirm both commands are on your PATH:
 
