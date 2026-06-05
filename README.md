@@ -117,9 +117,12 @@ You will be prompted for your password if sudo credentials have expired.
 
 > **Warning:** stopping the server removes everything in `/private/tftpboot`. Copy any files you want to keep before stopping.
 
-#### Option 3 — Install Quick Action
+#### Option 3 — Install / Uninstall Quick Action
 
-Copies the Finder Quick Action to `~/Library/Services/` and restarts Finder. Use this to reinstall the Quick Action after a macOS update or if it disappears from the right-click menu.
+This option toggles based on the current state:
+
+- **Install Quick Action** — copies the workflow to `~/Library/Services/`, strips the quarantine attribute, registers it with macOS, and restarts Finder. Use this after a fresh clone or if the service disappears.
+- **Uninstall Quick Action** — removes the workflow from `~/Library/Services/` and restarts Finder.
 
 #### Option 4 — Exit
 
@@ -129,24 +132,34 @@ Exits the program. The TFTP server continues running if started.
 
 ### Finder Quick Action — Copy to TFTP Server
 
-Right-click any file or folder in Finder and select **Copy to TFTP Server**.
+#### Where it appears
 
-![Quick Action in Finder context menu](docs/quick-action-screenshot.png)
+The Quick Action is registered as a macOS **Service** and appears in two places:
 
-A Terminal window opens and runs automatically:
+- **Finder menu bar** → Finder → Services → **Copy to TFTP Server**
+- **Right-click context menu** → Services → **Copy to TFTP Server**
 
-1. Checks if the TFTP server is running; starts it if not
-2. Copies each selected item to `/private/tftpboot/` using `cp -Rv` so every file path prints as it is copied
-3. Displays a completion message and waits for you to press Enter before closing
+> The item only appears when at least one file or folder is selected in Finder. It is not visible with an empty selection.
 
-Example Terminal output:
+#### How to use it
+
+1. In Finder, select one or more files or folders
+2. Right-click the selection (or use the Finder menu → Services)
+3. Choose **Copy to TFTP Server**
+4. A Terminal window opens automatically and runs `tftp-copy`
+5. When the Terminal shows **Press Enter to close...**, press Enter to dismiss it
+
+You can select multiple files and folders at once — all items are copied in a single operation.
+
+#### What happens in the Terminal window
 
 ```
 ╔══════════════════════════════════╗
 ║      TFTP Copy Utility           ║
 ╚══════════════════════════════════╝
 
-✓ TFTP server is running
+→ TFTP server not running — starting...
+✓ TFTP server started.  Root: /private/tftpboot
 
 → Copying to /private/tftpboot:
 
@@ -158,7 +171,15 @@ Example Terminal output:
 Press Enter to close...
 ```
 
-You can select multiple files or folders before right-clicking — all selected items are copied in one operation.
+If the server is already running the start step is skipped.
+
+#### About the TFTP daemon state
+
+`com.apple.tftpd` is an **inetd-style** daemon. Once started, `launchd` holds the UDP port 69 socket open permanently. The process itself (`tftpd`) only spawns when an actual TFTP transfer request arrives, then exits after serving it. This means:
+
+- `launchctl print system/com.apple.tftpd` shows `state = not running` — this is **normal and expected**
+- `sudo lsof -iUDP:69` shows `launchd` holding `*:tftp` — this confirms the server is **active and listening**
+- The TFTP manager status indicator uses `launchctl list com.apple.tftpd` exit code to detect the loaded state
 
 ---
 
@@ -173,7 +194,8 @@ Mac_TFTP_Server/
 └── quick-action/
     └── Copy to TFTP Server.workflow/
         └── Contents/
-            └── document.wflow   # Automator workflow definition
+            ├── document.wflow   # Automator workflow definition
+            └── Info.plist       # Bundle metadata (required for macOS service registration)
 ```
 
 ## Uninstall
@@ -187,13 +209,25 @@ rm -rf "$HOME/Library/Services/Copy to TFTP Server.workflow"
 ## Troubleshooting
 
 **Quick Action does not appear in Finder**
-Run `tftp-manager`, choose option 3 (Install Quick Action), or log out and back in.
+The service only shows when a file or folder is selected. If it still doesn't appear, run `tftp-manager` and choose option 3 (Install Quick Action), or log out and back in.
+
+**Quick Action is greyed out or does nothing**
+Open System Settings → Keyboard → Keyboard Shortcuts → Services and confirm **Copy to TFTP Server** is enabled under Files and Folders.
+
+**TFTP server shows `state = not running` but should be running**
+This is normal. `com.apple.tftpd` is an inetd-style daemon — `launchd` holds the UDP 69 socket and only spawns `tftpd` on an incoming request. Confirm it is listening with:
+```bash
+sudo lsof -iUDP:69
+```
 
 **`launchctl` fails with a permissions error**
 Make sure you are running as an administrator account. Standard (non-admin) accounts cannot load system LaunchDaemons.
 
 **Files are not served by the TFTP client**
-TFTP requires files to be world-readable. Check permissions with `ls -l /private/tftpboot/`. If needed, run `chmod a+r /private/tftpboot/*` to fix them.
+TFTP requires files to be world-readable. Check permissions with `ls -l /private/tftpboot/`. If needed:
+```bash
+sudo chmod a+r /private/tftpboot/*
+```
 
 **`tftp-manager: command not found`**
 Ensure `/usr/local/bin` is on your `PATH`. Add this to `~/.zshrc` if missing:
