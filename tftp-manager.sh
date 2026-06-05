@@ -104,11 +104,7 @@ install_quick_action() {
     "$LSREG" -f "$INSTALLED_WORKFLOW" 2>/dev/null || true
     killall Finder 2>/dev/null || true
     printf "${GREEN}✓ Quick Action installed.${NC}\n"
-    printf "  To make it appear directly in the right-click menu:\n"
-    printf "  System Settings → Privacy & Security → Extensions → Finder\n"
-    printf "  → enable ${BOLD}Copy to TFTP Server${NC}\n"
-    printf "  Opening System Settings...\n"
-    open "x-apple.systempreferences:com.apple.preference.extensions" 2>/dev/null || true
+    printf "  Right-click any file or folder in Finder → Copy to TFTP Server\n"
 }
 
 uninstall_quick_action() {

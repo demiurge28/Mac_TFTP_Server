@@ -41,10 +41,4 @@ killall Finder 2>/dev/null || true
 # ── Done ──────────────────────────────────────────────────────────────────────
 printf "\n${GREEN}✓ Installation complete!${NC}\n\n"
 printf "  • Run ${BOLD}tftp-manager${NC} from any terminal\n"
-printf "  • The Quick Action is registered. To make it appear directly\n"
-printf "    in the Finder right-click menu (not the Services submenu):\n"
-printf "    System Settings → Privacy & Security → Extensions → Finder\n"
-printf "    → enable ${BOLD}Copy to TFTP Server${NC}\n\n"
-printf "  Opening System Settings for you...\n"
-open "x-apple.systempreferences:com.apple.preference.extensions" 2>/dev/null || true
-printf "\n"
+printf "  • In Finder, right-click any file or folder → ${BOLD}Copy to TFTP Server${NC}\n\n"

@@ -13,7 +13,6 @@ A Bash CLI and Finder Quick Action for managing macOS's built-in TFTP server (`c
 # 1. Install
 git clone https://github.com/demiurge28/Mac_TFTP_Server.git
 cd Mac_TFTP_Server && ./install.sh
-# System Settings opens automatically — enable "Copy to TFTP Server" under Finder
 
 # 2. Start the TFTP server
 tftp-manager          # choose option 1
@@ -64,20 +63,9 @@ You will be prompted for your administrator password. The installer places the f
 | Workflow data | `/usr/local/share/tftp-manager/` | Source for Quick Action reinstall |
 | Quick Action | `~/Library/Services/` | Finder right-click service |
 
-Finder restarts automatically so the Quick Action is available immediately.
+Finder restarts automatically. The Quick Action is available immediately in the right-click menu.
 
-### 3. Enable the Quick Action in System Settings
-
-The installer opens System Settings automatically at the end of installation. When it opens:
-
-1. Navigate to **Privacy & Security → Extensions → Finder** (if not already there)
-2. Enable the toggle next to **Copy to TFTP Server**
-
-This is a one-time step required by macOS for any unsigned software that extends Finder's right-click menu. Once enabled, **Copy to TFTP Server** appears directly in the right-click Quick Actions section and in the Finder preview pane.
-
-> **Already works without this step** — the action is also available immediately under Finder → Services → Copy to TFTP Server (no toggle required).
-
-### 4. Verify
+### 3. Verify
 
 Confirm both commands are on your PATH:
 
@@ -146,26 +134,18 @@ Exits the program. The TFTP server continues running if started.
 
 #### Where it appears
 
-Right after `./install.sh` the action is available in:
+After installation, **Copy to TFTP Server** is available in:
 
-- **Finder menu bar** → Finder → Services → **Copy to TFTP Server**
+- **Right-click context menu** → Quick Actions → **Copy to TFTP Server**
 - **Right-click context menu** → Services → **Copy to TFTP Server**
-
-To promote it out of the Services submenu and into the **Quick Actions** section directly in the right-click menu (and the Finder preview pane), enable it once in System Settings:
-
-**System Settings → Privacy & Security → Extensions → Finder**
-
-Enable the toggle next to **Copy to TFTP Server**. After that it appears directly in the right-click menu and in the Finder preview pane toolbar.
-
-The installer opens this page for you automatically. `tftp-manager` option 3 also opens it when installing.
+- **Finder menu bar** → Finder → Services → **Copy to TFTP Server**
 
 > The item only appears when at least one file or folder is selected. It is not visible with an empty selection.
 
 #### How to use it
 
 1. In Finder, select one or more files or folders
-2. Right-click → **Copy to TFTP Server** (Quick Actions section, once enabled)
-   - Or: Finder menu → Services → **Copy to TFTP Server** (always available without enabling)
+2. Right-click → **Copy to TFTP Server**
 3. A Terminal window opens automatically and runs `tftp-copy`
 4. When the Terminal shows **Press Enter to close...**, press Enter to dismiss it
 
@@ -228,11 +208,8 @@ rm -rf "$HOME/Library/Services/Copy to TFTP Server.workflow"
 
 ## Troubleshooting
 
-**Quick Action does not appear in the right-click menu directly**
-Enable it in System Settings → Privacy & Security → Extensions → Finder. It always appears under Finder → Services as a fallback.
-
-**Quick Action is greyed out or does nothing**
-Confirm **Copy to TFTP Server** is toggled on in System Settings → Privacy & Security → Extensions → Finder. The toggle must be enabled for the Quick Action section to show it.
+**Quick Action does not appear in the right-click menu**
+Run `tftp-manager`, choose option 3 (Install Quick Action), or log out and back in. The action only appears when at least one file or folder is selected in Finder.
 
 **TFTP server shows `state = not running` but should be running**
 This is normal. `com.apple.tftpd` is an inetd-style daemon — `launchd` holds the UDP 69 socket and only spawns `tftpd` on an incoming request. Confirm it is listening with:
